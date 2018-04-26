@@ -1,0 +1,13 @@
+FROM phalconphp/php-fpm:7.2-min
+
+# 注意，這邊不能用 phpenmod，因為沒有php.ini，所以要用docker-php-ext-enable
+RUN apt update \
+&& apt install -y git zip \
+&& pecl install mongodb\
+&& docker-php-ext-enable mongodb \
+&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+#add docker-machine
+RUN base=https://github.com/docker/machine/releases/download/v0.14.0 \
+&& curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine \
+&& install /tmp/docker-machine /usr/local/bin/docker-machine
