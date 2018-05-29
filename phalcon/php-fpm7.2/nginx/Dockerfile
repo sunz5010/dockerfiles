@@ -30,4 +30,5 @@ RUN apt update \
 && make\
 && make install\
 && rm -rf /tmp/pecl-search_engine-solr\
-&& docker-php-ext-enable solr
+&& docker-php-ext-enable solr\
+&& apt install -y nginx
