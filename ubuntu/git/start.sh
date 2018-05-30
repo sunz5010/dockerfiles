@@ -11,7 +11,7 @@
 # export SSH_USER=myuser
 # export SSH_IDENTITYFILE_PATH=/id_rsa
 
-sudo mkdir /www
+mkdir /www
 
 #check variavble
 if [[ -z "${GIT_PULL_FOLDER}" ]]; then
@@ -58,7 +58,8 @@ fi
 #check ~/.ssh/config file exists
 if [ ! -f /root/.ssh/config ]; then
 	echo "ssh config file if not exists. creating..."
-	sudo cat > /root/.ssh/config <<EOL
+	mkdir /root/.ssh/
+	cat > /root/.ssh/config <<EOL
 Host git-codecommit.us-east-1.amazonaws.com
   StrictHostKeyChecking no
   User ${SSH_USER}
@@ -70,12 +71,12 @@ fi
 #check git_pull.sh file exists
 if [ ! -f /git_pull.sh ]; then
 	echo "git_pull.sh file if not exists. creating..."
-	sudo cat > /root/.ssh/config <<EOL
+	cat > /git_pull.sh <<EOL
 #!/bin/bash
 cd /www/${GIT_PULL_FOLDER}
 git pull
 EOL
-	sudo chmod +x /git_pull.sh
+	chmod +x /git_pull.sh
 fi
 
 #check this folder is git pull or not
@@ -84,14 +85,14 @@ if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
     rm -rf /www/${GIT_PULL_FOLDER}
 
     cd /www
-    sudo chmod 400 ${SSH_IDENTITYFILE_PATH}
-    sudo git clone ${GIT_PULL_REPO}
+    chmod 400 ${SSH_IDENTITYFILE_PATH}
+    git clone --depth 1 ${GIT_PULL_REPO}
 fi
 
 #add crontab
-cat "*/1 * * * * root /git_pull.sh > /tmp/git_pull.log" > /etc/cron.d/mycron
-sudo chmod 0644 /etc/cron.d/mycron
+echo "*/1 * * * * root /git_pull.sh > /tmp/git_pull.log" > /etc/cron.d/mycron
+chmod 0644 /etc/cron.d/mycron
 
 #start crond
-sudo touch /var/log/cron.log
-sudo cron && tail -f /var/log/cron.log
+touch /var/log/cron.log
+cron && tail -f /var/log/cron.log
