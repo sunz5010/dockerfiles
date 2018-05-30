@@ -1,6 +1,15 @@
+#!/bin/bash
+
 #notice file will put in /www
 #GIT_PULL_FOLDER only need set to project name ex.myWebsite
 #SSH_IDENTITYFILE_PATH need set to full path
+
+#you need following env
+# export GIT_PULL_FOLDER=mysite
+# export GIT_PULL_REPO=ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/mysite
+# export SSH_HOST=git-codecommit.us-east-1.amazonaws.com
+# export SSH_USER=myuser
+# export SSH_IDENTITYFILE_PATH=/id_rsa
 
 sudo mkdir /www
 
@@ -58,6 +67,17 @@ Host git-codecommit.us-east-1.amazonaws.com
 EOL
 fi
 
+#check git_pull.sh file exists
+if [ ! -f /git_pull.sh ]; then
+	echo "git_pull.sh file if not exists. creating..."
+	sudo cat > /root/.ssh/config <<EOL
+#!/bin/bash
+cd /www/${GIT_PULL_FOLDER}
+git pull
+EOL
+	sudo chmod +x /git_pull.sh
+fi
+
 #check this folder is git pull or not
 if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
     echo "folder is not git pull yet, start git clone."
@@ -67,3 +87,11 @@ if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
     sudo chmod 400 ${SSH_IDENTITYFILE_PATH}
     sudo git clone ${GIT_PULL_REPO}
 fi
+
+#add crontab
+cat "*/1 * * * * root /git_pull.sh > /tmp/git_pull.log" > /etc/cron.d/mycron
+sudo chmod 0644 /etc/cron.d/mycron
+
+#start crond
+sudo touch /var/log/cron.log
+sudo cron && tail -f /var/log/cron.log
