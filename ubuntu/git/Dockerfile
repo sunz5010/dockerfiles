@@ -1,18 +1,97 @@
-FROM ubuntu:latest
+#!/bin/bash
 
-#install crond
-RUN apt-get update && apt-get -y install cron
+#notice file will put in /www
+#GIT_PULL_FOLDER only need set to project name ex.myWebsite
+#SSH_IDENTITYFILE_PATH need set to full path
 
-# Add crontab file in the cron directory
-ADD crontab /etc/cron.d/mycron
+#you need following env
+# export GIT_PULL_FOLDER=mysite
+# export GIT_PULL_REPO=ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/mysite
+# export SSH_HOST=git-codecommit.us-east-1.amazonaws.com
+# export SSH_USER=myuser
+# export SSH_IDENTITYFILE_PATH=/id_rsa
 
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/mycron
+sudo mkdir /www
 
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
+#check variavble
+if [[ -z "${GIT_PULL_FOLDER}" ]]; then
+	echo "GIT_PULL_FOLDER is unset"
+	exit 0
+else
+	echo "GIT_PULL_FOLDER = ${GIT_PULL_FOLDER}"
+fi
 
-#copy startup script
-COPY start.sh /
+if [[ -z "${GIT_PULL_REPO}" ]]; then
+	echo "GIT_PULL_REPO is unset"
+	exit 0
+else
+	echo "GIT_PULL_REPO = ${GIT_PULL_REPO}"
+fi
 
-ENTRYPOINT ["/start.sh"]
+if [[ -z "${SSH_HOST}" ]]; then
+	echo "SSH_HOST is unset"
+	exit 0
+else
+	echo "SSH_HOST=${SSH_HOST}"
+fi
+
+if [[ -z "${SSH_USER}" ]]; then
+	echo "SSH_USER is unset"
+	exit 0
+else
+	echo "SSH_USER = ${SSH_USER}"
+fi
+
+if [[ -z "${SSH_IDENTITYFILE_PATH}" ]]; then
+	echo "SSH_IDENTITYFILE_PATH is unset"
+	exit 0
+else
+	echo "SSH_IDENTITYFILE_PATH = ${SSH_IDENTITYFILE_PATH}"
+fi
+
+#check ssh identity file exists
+if [ ! -f "${SSH_IDENTITYFILE_PATH}" ]; then
+	echo "ssh identity file if not exists."
+	exit 0
+fi
+
+#check ~/.ssh/config file exists
+if [ ! -f /root/.ssh/config ]; then
+	echo "ssh config file if not exists. creating..."
+	sudo cat > /root/.ssh/config <<EOL
+Host git-codecommit.us-east-1.amazonaws.com
+  StrictHostKeyChecking no
+  User ${SSH_USER}
+  Port 22
+  IdentityFile ${SSH_IDENTITYFILE_PATH}
+EOL
+fi
+
+#check git_pull.sh file exists
+if [ ! -f /git_pull.sh ]; then
+	echo "git_pull.sh file if not exists. creating..."
+	sudo cat > /root/.ssh/config <<EOL
+#!/bin/bash
+cd /www/${GIT_PULL_FOLDER}
+git pull
+EOL
+	sudo chmod +x /git_pull.sh
+fi
+
+#check this folder is git pull or not
+if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
+    echo "folder is not git pull yet, start git clone."
+    rm -rf /www/${GIT_PULL_FOLDER}
+
+    cd /www
+    sudo chmod 400 ${SSH_IDENTITYFILE_PATH}
+    sudo git clone ${GIT_PULL_REPO}
+fi
+
+#add crontab
+cat "*/1 * * * * root /git_pull.sh > /tmp/git_pull.log" > /etc/cron.d/mycron
+sudo chmod 0644 /etc/cron.d/mycron
+
+#start crond
+sudo touch /var/log/cron.log
+sudo cron && tail -f /var/log/cron.log
