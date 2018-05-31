@@ -87,7 +87,6 @@ if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
     cd /www
     chmod 400 ${SSH_IDENTITYFILE_PATH}
     git clone --depth 1 ${GIT_PULL_REPO}
-    chmod 777 -R /www
 fi
 
 #add crontab
