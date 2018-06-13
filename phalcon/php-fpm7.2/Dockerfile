@@ -8,6 +8,7 @@ FROM phalconphp/php-fpm:7.2-min
 # php-solr
 # php-gd
 # php-exif
+# php-mbstring
 # composer
 
 # 注意，這邊不能用 phpenmod，要用docker-php-ext-enable
@@ -19,8 +20,8 @@ FROM phalconphp/php-fpm:7.2-min
 RUN apt update \
 && apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev\
 && pecl install mongodb memcached\
-&& docker-php-ext-install gd exif\
-&& docker-php-ext-enable mongodb memcached gd exif\
+&& docker-php-ext-install gd exif mbstring\
+&& docker-php-ext-enable mongodb memcached gd exif mbstring\
 && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\
 && cd /tmp\
 && git clone https://github.com/php/pecl-search_engine-solr.git\
