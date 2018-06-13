@@ -2,14 +2,12 @@
 #reference: https://github.com/phalcon/dockerfiles/blob/master/nginx/Dockerfile
 
 # Pull base image
-FROM ubuntu
+FROM ubuntu:latest
 
 # Adding repositories
-RUN add-apt-repository -y ppa:nginx/stable && \
-    apt-get update -y && apt-get upgrade -y
+RUN apt update && \
+    apt install -y nginx && \
 
-# Install Nginx
-RUN apt-get install -y --force-yes --no-install-recommends nginx
 
 # Cleanup package manager
 RUN apt-get clean && \
@@ -21,7 +19,6 @@ RUN mkdir /etc/nginx/global && \
 
 # Apply Nginx configuration
 ADD conf/restrict.conf /etc/nginx/global/restrict.conf
-ADD conf/nginx.conf /etc/nginx/nginx.conf
 
 RUN usermod -u 1000 www-data
 
@@ -32,11 +29,8 @@ RUN chown -R www-data:www-data /var/lib/nginx && \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
-# Define mountable directories
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d"]
-
 # Expose ports
-EXPOSE 80 443
+EXPOSE 80
 
 # Define default command
 CMD ["nginx", "-g", "daemon off;"]
