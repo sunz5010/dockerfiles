@@ -7,4 +7,6 @@ RUN apt-get update && apt-get -y install cron git
 COPY start.sh /
 RUN chmod +x /start.sh
 
+RUN usermod -u 33 www-data
+
 ENTRYPOINT ["/start.sh"]
