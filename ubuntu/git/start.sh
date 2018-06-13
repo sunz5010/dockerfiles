@@ -11,7 +11,8 @@
 # export SSH_USER=myuser
 # export SSH_IDENTITYFILE_PATH=/id_rsa
 
-mkdir /www
+sudo mkdir /www
+chowd www-data: /www
 
 #check variavble
 if [[ -z "${GIT_PULL_FOLDER}" ]]; then
