@@ -12,7 +12,6 @@
 # export SSH_IDENTITYFILE_PATH=/id_rsa
 
 sudo mkdir /www
-chowd www-data: /www
 
 #check variavble
 if [[ -z "${GIT_PULL_FOLDER}" ]]; then
@@ -88,6 +87,9 @@ if [ ! -d "/www/${GIT_PULL_FOLDER}/.git" ]; then
     cd /www
     chmod 400 ${SSH_IDENTITYFILE_PATH}
     git clone ${GIT_PULL_REPO}
+    
+    #change owner
+    chown www-data: -R /www
 fi
 
 #add crontab
