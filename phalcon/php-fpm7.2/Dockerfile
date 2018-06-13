@@ -7,6 +7,7 @@ FROM phalconphp/php-fpm:7.2-min
 # php-memcached
 # php-solr
 # php-gd
+# php-exif
 # composer
 
 # 注意，這邊不能用 phpenmod，要用docker-php-ext-enable
