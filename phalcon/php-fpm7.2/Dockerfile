@@ -9,6 +9,7 @@ FROM phalconphp/php-fpm:7.2-min
 # php-gd
 # php-exif
 # php-mbstring
+# php-zip 給composer安裝的時候，不要去clone git repo，導致vendor裡面有.git資料夾
 # composer
 
 # 注意，這邊不能用 phpenmod，要用docker-php-ext-enable
