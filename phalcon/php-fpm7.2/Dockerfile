@@ -18,6 +18,9 @@ FROM php:7.2-fpm
 # git libxml2 libxml2-dev libcurl4-gnutls-dev 這個是為了要安裝php solr
 # zlib1g-dev 這個是為了要安裝memcahced
 # libpng-dev 為了要安裝gd
+# libjpeg-dev support h
+# libpng-dev 為了要安裝jpeg
+# libfreetype6-dev 可以寫字到圖片上
 
 RUN apt update \
 && apt install -y git zip \
@@ -27,7 +30,7 @@ RUN apt update \
 && cp ../tests/_ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
 && cd ../../ \
 && rm -r cphalcon \
-&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev\
+&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev\
 && pecl install mongodb memcached\
 && docker-php-ext-install gd exif mbstring zip\
 && docker-php-ext-enable mongodb memcached gd exif mbstring zip\
