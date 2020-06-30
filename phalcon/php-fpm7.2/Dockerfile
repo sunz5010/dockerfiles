@@ -11,6 +11,7 @@ FROM php:7.2-fpm
 # php-exif
 # php-mbstring
 # php-zip 給composer安裝的時候，不要去clone git repo，導致vendor裡面有.git資料夾
+# mysqli 這邊是為了給wordpress用的
 # composer
 
 # 注意，這邊不能用 phpenmod，要用docker-php-ext-enable
