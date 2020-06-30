@@ -11,6 +11,7 @@ FROM php:7.4-fpm
 # php-exif
 # php-mbstring
 # php-zip 給composer安裝的時候，不要去clone git repo，導致vendor裡面有.git資料夾
+# mysqli 這邊是為了給wordpress用的
 # composer
 
 # 注意，這邊不能用 phpenmod，要用docker-php-ext-enable
@@ -22,6 +23,15 @@ FROM php:7.4-fpm
 # libpng-dev 為了要安裝jpeg
 # libfreetype6-dev 可以寫字到圖片上
 
+# 2020-06-30 
+# 注意，--with-freetype-dir --with-jpeg-dir 這兩個參數在php7.4改名稱了，改為 --with-freetype --with-jpeg，所以這個設定檔不能支援php7.2
+# ref: https://github.com/docker-library/php/issues/931
+#
+# 多安裝，libonig-dev，新版mbstring需要
+# ref: https://github.com/docker-library/php/issues/880
+#
+# 多安裝，libzip-dev，新版zip需要
+
 RUN apt update \
 && apt install -y git zip \
 && git clone --depth=1 --branch 3.4.x --single-branch "git://github.com/phalcon/cphalcon.git" \
@@ -30,9 +40,9 @@ RUN apt update \
 && cp ../tests/_ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
 && cd ../../ \
 && rm -r cphalcon \
-&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev\
+&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev\
 && pecl install mongodb memcached\
-&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+&& docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
 && docker-php-ext-install gd exif mbstring zip mysqli\
 && docker-php-ext-enable mongodb memcached gd exif mbstring zip mysqli\
 && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\
