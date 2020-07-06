@@ -68,5 +68,3 @@ RUN apt update \
 && apt clean \
 && rm -rf /var/lib/apt/lists/* \
 && pecl clear-cache
-&& apt clean \
-&& rm -rf /var/lib/apt/lists/*
