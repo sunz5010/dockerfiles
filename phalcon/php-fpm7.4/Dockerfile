@@ -1,6 +1,6 @@
 FROM php:7.4-fpm
 
-# fork from phalconphp/php-fpm:7.2-min
+# phalcon 4.x
 
 # 本dockerfiles增加的項目如下
 # git
@@ -34,10 +34,20 @@ FROM php:7.4-fpm
 
 RUN apt update \
 && apt install -y git zip \
-&& git clone --depth=1 --branch 3.4.x --single-branch "git://github.com/phalcon/cphalcon.git" \
+
+&& git clone --depth=1 "https://github.com/jbboehr/php-psr.git" \
+&& cd php-psr \
+&& phpize \
+&& ./configure \
+&& make \
+&& make install \
+&& cd .. \
+&& rm -r php-psr \
+&& docker-php-ext-enable psr \
+&& git clone --depth=1 -b 4.0.x --single-branch "git://github.com/phalcon/cphalcon.git" \
 && cd cphalcon/build \
 && ./install \
-&& cp ../tests/_ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
+&& cp ../.ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
 && cd ../../ \
 && rm -r cphalcon \
 && apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev\
@@ -58,3 +68,5 @@ RUN apt update \
 && apt clean \
 && rm -rf /var/lib/apt/lists/* \
 && pecl clear-cache
+&& apt clean \
+&& rm -rf /var/lib/apt/lists/*
