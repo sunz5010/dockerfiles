@@ -34,7 +34,6 @@ FROM php:7.4-fpm
 
 RUN apt update \
 && apt install -y git zip \
-
 && git clone --depth=1 "https://github.com/jbboehr/php-psr.git" \
 && cd php-psr \
 && phpize \
