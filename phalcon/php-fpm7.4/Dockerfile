@@ -22,6 +22,7 @@ FROM php:7.4-fpm
 # libjpeg-dev support h
 # libpng-dev 為了要安裝jpeg
 # libfreetype6-dev 可以寫字到圖片上
+# libgmp-dev 為了要裝gmp，裝gmp是為了要用套件jose，這個套件是為了要使用sign in with apple
 
 # 2020-06-30 
 # 注意，--with-freetype-dir --with-jpeg-dir 這兩個參數在php7.4改名稱了，改為 --with-freetype --with-jpeg，所以這個設定檔不能支援php7.2
@@ -49,11 +50,11 @@ RUN apt update \
 && cp ../.ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
 && cd ../../ \
 && rm -r cphalcon \
-&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev\
+&& apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev libgmp-dev\
 && pecl install mongodb memcached\
 && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
-&& docker-php-ext-install gd exif mbstring zip mysqli\
-&& docker-php-ext-enable mongodb memcached gd exif mbstring zip mysqli\
+&& docker-php-ext-install gd exif mbstring zip mysqli gmp\
+&& docker-php-ext-enable mongodb memcached gd exif mbstring zip mysqli gmp\
 && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\
 && cd /tmp\
 && git clone https://github.com/php/pecl-search_engine-solr.git\
