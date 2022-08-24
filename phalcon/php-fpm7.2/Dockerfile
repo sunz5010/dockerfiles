@@ -35,8 +35,8 @@ RUN apt update \
 && apt install -y git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libgmp-dev\
 && pecl install mongodb memcached\
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-install gd exif mbstring zip mysqli gmp\
-&& docker-php-ext-enable mongodb memcached gd exif mbstring zip mysqli gmp\
+&& docker-php-ext-install gd exif mbstring zip mysqli gmp bcmath\
+&& docker-php-ext-enable mongodb memcached gd exif mbstring zip mysqli gmp bcmath\
 && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer\
 && cd /tmp\
 && git clone https://github.com/php/pecl-search_engine-solr.git\
