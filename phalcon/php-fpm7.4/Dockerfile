@@ -44,7 +44,7 @@ RUN apt update \
 && cd .. \
 && rm -r php-psr \
 && docker-php-ext-enable psr \
-&& git clone --depth=1 -b 4.1.1 --single-branch "https://github.com/phalcon/cphalcon.git" \
+&& git clone --depth=1 -b 4.1.1-release --single-branch "https://github.com/phalcon/cphalcon.git" \
 && cd cphalcon/build \
 && ./install \
 && cp ../.ci/phalcon.ini $(php-config --configure-options | grep -o "with-config-file-scan-dir=\([^ ]*\)" | awk -F'=' '{print $2}') \
