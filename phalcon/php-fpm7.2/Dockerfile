@@ -23,6 +23,7 @@ FROM php:7.2-fpm
 # libpng-dev 為了要安裝jpeg
 # libfreetype6-dev 可以寫字到圖片上
 # libgmp-dev 為了要裝gmp，裝gmp是為了要用套件jose，這個套件是為了要使用sign in with apple
+# 修改fpm最大process from 3 => 20
 
 RUN apt update \
 && apt install -y git zip \
@@ -49,4 +50,5 @@ RUN apt update \
 && docker-php-ext-enable solr \
 && apt clean \
 && rm -rf /var/lib/apt/lists/* \
-&& pecl clear-cache
+&& pecl clear-cache \ 
+&& sed -i 's/pm.max_spare_servers = 3/pm.max_spare_servers = 20/g' /usr/local/etc/php-fpm.d/www.conf
