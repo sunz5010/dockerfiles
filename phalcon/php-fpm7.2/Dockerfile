@@ -24,6 +24,7 @@ FROM php:7.2-fpm
 # libfreetype6-dev 可以寫字到圖片上
 # libgmp-dev 為了要裝gmp，裝gmp是為了要用套件jose，這個套件是為了要使用sign in with apple
 # 修改fpm最大process from 3 => 20
+# 2024-03-25 嘗試重新build更新內容
 
 RUN apt update \
 && apt install -y git zip \
