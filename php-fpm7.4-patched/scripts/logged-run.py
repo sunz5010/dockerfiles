@@ -9,4 +9,12 @@ with log.open("w") as f:
 with log.open("a") as f: f.write("\nEXIT_CODE: "+str(rc)+"\n")
 with (log.parent/"commands.jsonl").open("a") as f: f.write(json.dumps(dict(start=start,command=sys.argv[2:],exit_code=rc,log=str(log)))+"\n")
 print(str(log)+": exit "+str(rc),flush=True)
+if rc:
+ # Keep the full artifact and expose an actionable tail in CI annotations.
+ import os
+ tail = "\n".join(log.read_text(errors="replace").splitlines()[-80:])[-12000:]
+ print(tail, flush=True)
+ if os.environ.get("GITHUB_ACTIONS") == "true":
+  escaped = tail.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+  print("::error title=Build or test command failed::" + escaped, flush=True)
 sys.exit(rc)
