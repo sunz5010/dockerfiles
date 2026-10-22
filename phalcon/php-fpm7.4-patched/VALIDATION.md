@@ -31,5 +31,18 @@ build. AMD64 is not supported by the currently published base.
 
 Full build and acceptance reports are generated in ignored `reports/` by
 `./build.sh` and `./test.sh`. A local evidence copy and image archive are retained
-in the handoff workspace. No Phalcon image was published to Docker Hub as part
-of this source change.
+in the handoff workspace.
+
+## Docker Hub release verification
+
+Published 2026-10-22 after the source change was uploaded:
+
+`luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261022-arm64`
+
+Remote index digest:
+`sha256:d86c498879b60862aef8d9559be13364ca19e963117f9c675e84e61a60e24d12`.
+It equals the accepted local image descriptor. The index has one runnable
+platform, linux/arm64, plus build provenance. Anonymous pull with an empty
+Docker config passed, and all lifecycle/extension acceptance checks passed
+again using the remote repository and digest. PHP binary hashes still match
+the published patched base. No AMD64 or latest tag was published.

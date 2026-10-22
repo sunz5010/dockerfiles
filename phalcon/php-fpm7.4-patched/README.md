@@ -10,6 +10,24 @@ The published base currently supports **linux/arm64 only**. The original
 [`../php-fpm7.4/Dockerfile`](../php-fpm7.4/Dockerfile) is retained separately.
 This directory does not publish a Phalcon image to Docker Hub automatically.
 
+## Published image
+
+Docker Hub: [luofofo/phalcon-php-fpm7.4-patched](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched).
+The published image supports **linux/arm64 only**.
+
+```sh
+docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261022-arm64
+```
+
+To pin this Phalcon image in a downstream Dockerfile:
+
+```dockerfile
+FROM luofofo/phalcon-php-fpm7.4-patched@sha256:d86c498879b60862aef8d9559be13364ca19e963117f9c675e84e61a60e24d12
+```
+
+Release source commit: `2c57b2f011525b4426b14ba438785189c9019cd1`.
+Remote digest equality, anonymous pull and acceptance by remote digest passed.
+
 ## Build and test
 
 Requirements: Docker with BuildKit, Python 3 and network access for verified
