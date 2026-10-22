@@ -29,3 +29,7 @@ These hashes identify that historical build; rebuild timestamps can change binar
 The standalone package was built and tested again on native ARM64 before upload on 2026-10-22: build PASS, lifecycle acceptance PASS, 1006 official PHPT PASS / 12 SKIP / 0 FAIL. The standalone acceptance additionally compares all 17 source hashes directly against the committed official full-file hash manifest. GitHub Actions also builds and tests both arm64 and amd64 natively. A workflow definition is not evidence of a passing run: consult the workflow run and its per-architecture report artifacts.
 
 Validation covers the official minimal EOL mitigation and listed test scope. It is not complete security maintenance, a full extension/application audit, or proof that every possible exploit is blocked.
+
+## Deterministic channel metadata follow-up
+
+A cloud diagnostic run identified invalid XML from the live PECL channel endpoint after PHP compilation/install succeeded. The recipe now uses official checksum-locked local PEAR/PECL XML; a network-disabled channel update probe passed, then the revised ARM64 build, source/lifecycle acceptance and official PHPT passed again (1006 PASS / 12 SKIP / 0 FAIL). A native AMD64 run of the preceding recipe also passed the complete build/test workflow. Consult CI for the final per-architecture results of the current recipe.

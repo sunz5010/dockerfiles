@@ -27,7 +27,7 @@
 ./phpt.sh
 ```
 
-`build.sh` 會先驗證 `sources.lock.json` 中的輸入；缺少的檔案由固定 HTTPS 來源下載並核對 SHA256。PHP 壓縮檔不放進 Git。已有檔案若校驗失敗，程式會停止，不會覆寫。
+`build.sh` 會先驗證 `sources.lock.json` 中的輸入；缺少的檔案由固定 HTTPS 來源下載並核對 SHA256。PHP 壓縮檔不放進 Git。PEAR／PECL channel XML 隨版本固定並校驗，避免即時 metadata 端點偶發回傳錯誤內容造成編譯後失敗。已有檔案若校驗失敗，程式會停止，不會覆寫。
 
 預設本機 tag：`php74-fpm-patched:7.4.33-php2shell-712e60f9edfd`。預設採 Docker daemon 的原生 arm64 或 amd64 架構；亦可明確指定：
 

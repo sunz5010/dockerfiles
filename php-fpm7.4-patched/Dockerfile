@@ -83,8 +83,11 @@ RUN set -eux; \
     rm -rf /usr/src/patched /usr/src/php-7.4.33.tar.xz /var/lib/apt/lists/*
 
 COPY docker-php-source /usr/local/bin/
+COPY pear-channel.xml pecl-channel.xml /usr/local/share/php2shell/channels/
 
 RUN set -eux; \
+    echo '7f21f5a755f3d013ca40e79aaa3a94aa7c5ced97cee85a678221c63d804f6322  /usr/local/share/php2shell/channels/pear-channel.xml' | sha256sum -c -; \
+    echo '907b20429d188f8b4348b4142e18bd073c8cd811ccc4913a7e2c442d85b5693f  /usr/local/share/php2shell/channels/pecl-channel.xml' | sha256sum -c -; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
@@ -197,9 +200,9 @@ RUN set -eux; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
-# update pecl channel definitions https://github.com/docker-library/php/issues/443
-	pear channel-update https://pear.php.net/channel.xml; \
-	pecl channel-update https://pecl.php.net/channel.xml; \
+# update from verified local metadata; live PECL returned invalid XML in CI
+	pear channel-update /usr/local/share/php2shell/channels/pear-channel.xml; \
+	pecl channel-update /usr/local/share/php2shell/channels/pecl-channel.xml; \
 	rm -rf /tmp/pear ~/.pearrc; \
 	\
 # smoke test

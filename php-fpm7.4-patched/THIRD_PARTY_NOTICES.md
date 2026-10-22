@@ -4,4 +4,6 @@
 
 `security.patch` is the complete official PHP source commit `712e60f9edfd03f0960fc4fc3c2c375f42b90aa2`. The downloaded PHP release and patch affect PHP and Zend sources. Their upstream license texts are retained in `licenses/PHP-LICENSE.txt` and `licenses/Zend-LICENSE.txt`, and the complete source distribution preserves its own notices.
 
-Public immutable URLs and SHA256 hashes are recorded in `sources.lock.json`. Upstream sources and advisory attribution are recorded in `PATCH_PROVENANCE.md`.
+Source URLs and fixed SHA256 hashes are recorded in `sources.lock.json`. Upstream sources and advisory attribution are recorded in `PATCH_PROVENANCE.md`.
+
+`pear-channel.xml` and `pecl-channel.xml` are official channel configuration snapshots from pear.php.net and pecl.php.net, retained byte-for-byte with SHA256 locks.

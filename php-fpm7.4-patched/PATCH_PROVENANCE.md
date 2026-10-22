@@ -20,9 +20,9 @@ The entire official patch is applied; it was not reduced to an INI toggle. Both 
 
 The Dockerfile retains the original official Debian Bullseye FPM recipe and configure options. The base is pinned by manifest digest. Removed live-repository packages are served from Debian's official EOL archives. APT signature verification stays enabled; only frozen archive metadata expiry is disabled.
 
-PEAR and PECL channel refreshes use their explicit working official URLs rather than the defunct doc.php.net channel. Original helpers are vendored with immutable source URLs and hashes in `sources.lock.json`.
+PEAR and PECL channel updates use vendored official XML with SHA256 locks. A cloud build compiled PHP successfully but the live PECL endpoint returned invalid XML; the verified local metadata updates were tested with networking disabled. Both metadata hashes are also checked inside the Dockerfile. Original helpers remain pinned to immutable source URLs and hashes in `sources.lock.json`.
 
-Rebuildable inputs are locked, but the output is not claimed bit-for-bit reproducible: compilation timestamps, image creation metadata, and PEAR channel metadata may vary. No claim of ongoing Bullseye or PHP 7.4 security maintenance is made.
+Rebuildable inputs are locked, but the output is not claimed bit-for-bit reproducible: compilation timestamps and image creation metadata may vary. PEAR/PECL channel metadata is now also checksum locked. No claim of ongoing Bullseye or PHP 7.4 security maintenance is made.
 
 ## Verification limits
 

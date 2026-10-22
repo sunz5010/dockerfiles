@@ -38,5 +38,13 @@
   "licenses/Zend-LICENSE.txt": {
     "url": "https://raw.githubusercontent.com/php/php-src/712e60f9edfd03f0960fc4fc3c2c375f42b90aa2/Zend/LICENSE",
     "sha256": "509aeb3be64e428d7e0004ce224620ab01bf94adaacefbb449611939df56bc5b"
+  },
+  "pear-channel.xml": {
+    "url": "https://pear.php.net/channel.xml",
+    "sha256": "7f21f5a755f3d013ca40e79aaa3a94aa7c5ced97cee85a678221c63d804f6322"
+  },
+  "pecl-channel.xml": {
+    "url": "https://pecl.php.net/channel.xml",
+    "sha256": "907b20429d188f8b4348b4142e18bd073c8cd811ccc4913a7e2c442d85b5693f"
   }
 }
