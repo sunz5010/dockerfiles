@@ -1,0 +1,42 @@
+{
+  "php-7.4.33.tar.xz": {
+    "url": "https://www.php.net/distributions/php-7.4.33.tar.xz",
+    "sha256": "924846abf93bc613815c55dd3f5809377813ac62a9ec4eb3778675b82a27b927"
+  },
+  "docker-php-source": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/docker-php-source",
+    "sha256": "35db863f9c436fd8d04c25262a9fc5c78daa0d79efd1a606f23bbc4e2980c736"
+  },
+  "docker-php-entrypoint": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/docker-php-entrypoint",
+    "sha256": "153f186d1abf12b85c4f524b9c6b1b0009364fbabc0dad4db9aaba8fab016a42"
+  },
+  "docker-php-ext-enable": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/docker-php-ext-enable",
+    "sha256": "861e94e4199f770f433cf5b3dca26fecb14401170a1140c41b79f9c9713cdc7f"
+  },
+  "docker-php-ext-configure": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/docker-php-ext-configure",
+    "sha256": "2464740142f245e2ff4539b9773fc37b7637407ba569da9d1961f91a13623edd"
+  },
+  "docker-php-ext-install": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/docker-php-ext-install",
+    "sha256": "d2b1ad2c5374045dae8c0969b22362fa7e69dae827ce6d17c834a083c2ae7a73"
+  },
+  "security.patch": {
+    "url": "https://github.com/php/php-src/commit/712e60f9edfd03f0960fc4fc3c2c375f42b90aa2.patch",
+    "sha256": "5fe57ca6ee96d59b36c6e0ca842843c50884f177bef1e85234cf669b577f5e48"
+  },
+  "licenses/docker-library-php-MIT.txt": {
+    "url": "https://raw.githubusercontent.com/docker-library/php/b9f17156020c3aef71df681b27684533529347a7/LICENSE",
+    "sha256": "0a3ffdfc4f368b76ae1140b5fbe2f2f69ee76ee00a3024e8a09ca9b2e265186f"
+  },
+  "licenses/PHP-LICENSE.txt": {
+    "url": "https://raw.githubusercontent.com/php/php-src/712e60f9edfd03f0960fc4fc3c2c375f42b90aa2/LICENSE",
+    "sha256": "a188db807d711536f71e27b7d36879d63480f7994dc18adc08e624b3c5430fff"
+  },
+  "licenses/Zend-LICENSE.txt": {
+    "url": "https://raw.githubusercontent.com/php/php-src/712e60f9edfd03f0960fc4fc3c2c375f42b90aa2/Zend/LICENSE",
+    "sha256": "509aeb3be64e428d7e0004ce224620ab01bf94adaacefbb449611939df56bc5b"
+  }
+}

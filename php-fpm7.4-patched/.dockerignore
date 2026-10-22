@@ -1,0 +1,5 @@
+*
+!Dockerfile
+!docker-php-*
+!php-7.4.33.tar.xz
+!security.patch

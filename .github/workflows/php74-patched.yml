@@ -1,0 +1,70 @@
+name: PHP 7.4 patched build and test
+
+on:
+  push:
+    paths:
+      - 'php-fpm7.4-patched/**'
+      - '.github/workflows/php74-patched.yml'
+  pull_request:
+    paths:
+      - 'php-fpm7.4-patched/**'
+      - '.github/workflows/php74-patched.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: php74-patched-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build and test ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            platform: linux/arm64
+            runner: ubuntu-24.04-arm
+          - arch: amd64
+            platform: linux/amd64
+            runner: ubuntu-24.04
+    env:
+      PLATFORM: ${{ matrix.platform }}
+      PHP74_IMAGE: php2shell-ci/php74-fpm:${{ github.sha }}-${{ matrix.arch }}
+    defaults:
+      run:
+        working-directory: php-fpm7.4-patched
+        shell: bash
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Check native Docker platform
+        run: |
+          docker version
+          docker buildx version
+          actual=$(docker info --format '{{.Architecture}}')
+          case "$PLATFORM:$actual" in
+            linux/arm64:arm64|linux/arm64:aarch64|linux/amd64:amd64|linux/amd64:x86_64) ;;
+            *) echo "Unexpected daemon architecture: $actual for $PLATFORM" >&2; exit 1 ;;
+          esac
+      - name: Fetch verified inputs and build
+        run: ./build.sh
+      - name: Verify source, CLI and FPM lifecycle
+        run: ./test.sh
+      - name: Run selected official PHPT regressions
+        run: ./phpt.sh
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: php74-patched-${{ matrix.arch }}-${{ github.sha }}
+          path: php-fpm7.4-patched/reports/
+          retention-days: 7
+          if-no-files-found: warn

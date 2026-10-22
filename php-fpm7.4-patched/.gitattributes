@@ -1,0 +1,3 @@
+* text eol=lf
+# Preserve the official patch byte-for-byte; diff context contains leading spaces/tabs.
+security.patch -text -whitespace
