@@ -1,0 +1,6 @@
+*
+!Dockerfile
+!SHA256SUMS
+!*.tar.gz
+!*.tgz
+!composer.phar

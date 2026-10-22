@@ -1,0 +1,26 @@
+{
+  "psr.tar.gz": {
+    "url": "https://codeload.github.com/jbboehr/php-psr/tar.gz/e068927c1380bbcb454a4b4436db5bf678e65625",
+    "sha256": "f51158a4d1e7c05622b721b3b1757ec4886f9259ea79a595cab2d724dff380a6"
+  },
+  "phalcon.tar.gz": {
+    "url": "https://codeload.github.com/phalcon/cphalcon/tar.gz/dcb2be7acac3856ecba9b1032ddee9270503a614",
+    "sha256": "06db1abf70d9276001dc0812d1cd2f67c5880117404204854d4110fcbb562aa8"
+  },
+  "solr.tar.gz": {
+    "url": "https://codeload.github.com/php/pecl-search_engine-solr/tar.gz/9a8452d7ddc06f18f97752b34198d9b36499d29d",
+    "sha256": "fc39ba1d40c00cd5eaeab9099160a696e263ee17d563e85dddedef52f48e4ea1"
+  },
+  "mongodb-1.20.1.tgz": {
+    "url": "https://pecl.php.net/get/mongodb-1.20.1.tgz",
+    "sha256": "614e57594918feb621f525e6516d59ce09b78f5172355ba8afb6c2207c1ce900"
+  },
+  "memcached-3.2.0.tgz": {
+    "url": "https://pecl.php.net/get/memcached-3.2.0.tgz",
+    "sha256": "2a41143a7b29f4a962a3805b77aa207a99e4566e2d314ce98a051cd24d6e9636"
+  },
+  "composer.phar": {
+    "url": "https://getcomposer.org/download/2.2.25/composer.phar",
+    "sha256": "8b3f41253363f0645402d1951d6e7f02adedeef29c16de6074763e463e25c23f"
+  }
+}
