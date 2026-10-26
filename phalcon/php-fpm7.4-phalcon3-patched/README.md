@@ -4,12 +4,22 @@ For existing Phalcon 3 applications that need the patched PHP 7.4 runtime.
 This recipe builds **linux/amd64** (Linux `x86_64`) and preserves Phalcon 3
 Collection/ODM, Session, Cache and legacy DI interfaces.
 
-## Published image
+## MongoDB 1.19.4 release
 
 [Docker Hub](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched/tags?name=3.4.5)
 
+Published and independently verified on 2026-10-27, including anonymous pull
+and acceptance by remote digest. The existing 2026-10-26 tags remain available
+and unchanged.
+
 ```sh
 docker pull luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261027-mongo1.19.4-amd64
+```
+
+Pin this accepted release:
+
+```dockerfile
+FROM luofofo/phalcon-php-fpm7.4-patched@sha256:0996917b4ea0391ece73abe9fad80fcb9f6805737d157c849fe49da94fda958e
 ```
 
 The earlier Phalcon 3 ARM64 tags were retired at the user's request. This

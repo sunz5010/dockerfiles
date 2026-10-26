@@ -8,12 +8,22 @@ Phalcon 4 has different application APIs from Phalcon 3. Existing Phalcon 3
 applications should use the separate
 [Phalcon 3.4.5 compatibility recipe](../php-fpm7.4-phalcon3-patched/).
 
-## Published image
+## MongoDB 1.19.4 release
 
 Docker Hub: [luofofo/phalcon-php-fpm7.4-patched](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched/tags?name=4.1.1).
 
+Published and independently verified on 2026-10-27, including anonymous pull
+and acceptance by remote digest. The existing 2026-10-26 tags remain available
+and unchanged.
+
 ```sh
 docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64
+```
+
+Pin this accepted release:
+
+```dockerfile
+FROM luofofo/phalcon-php-fpm7.4-patched@sha256:6bc986f6be9679502391df257ab950c7980ee88ce1f20e87667be50389de409c
 ```
 
 The validation result is recorded in [VALIDATION.md](VALIDATION.md). This recipe does not overwrite `latest` or any

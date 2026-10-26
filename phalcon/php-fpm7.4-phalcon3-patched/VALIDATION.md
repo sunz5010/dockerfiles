@@ -5,7 +5,27 @@
 Target tag: `3.4.5-php7.4.33-php2shell-20261027-mongo1.19.4-amd64`.
 The MongoDB extension is pinned to 1.19.4 for legacy integer read-preference
 compatibility. Existing 2026-10-26 image tags remain unchanged.
-This release is tested independently; results are recorded below after acceptance.
+- Source commit: `0d2f097ac8e106e9ba5357fa863358826f4fa2ad`.
+- [Native AMD64 CI for both variants](https://github.com/sunz5010/dockerfiles/actions/runs/40414499590): PASS.
+- Local AMD64 build/acceptance under QEMU: PASS. Patched PHP binaries and all
+  17 official source hashes unchanged; CLI/FPM lifecycle and extensions PASS.
+- All five legacy integer read-preference modes in CLI/FPM with E_ALL
+  diagnostics promoted to exceptions: PASS.
+- Original incubator 3.3.0 and mongodb/mongodb 1.4.2 library CRUD, bulk,
+  aggregate output, indexes and database management against an isolated
+  MongoDB 4.2.8 server: PASS. All 9 original files / 51 integer calls verified.
+- Atomic findAndModify tests use the application's existing explicit majority
+  writeConcern and array conversion. The old adapter's empty-default concern
+  issue also occurs with extension 1.20.1; no workaround was added to vendor.
+- Docker Hub publication, anonymous pull and acceptance by remote digest: PASS.
+- Published digest: `sha256:0996917b4ea0391ece73abe9fad80fcb9f6805737d157c849fe49da94fda958e`.
+- Both existing 2026-10-26 tags are retained with their original digests; no
+  existing tag or `latest` was overwritten.
+- Original legacy application: 24 frontend/API cases, MongoDB session/auth/logout,
+  both caches, 90 requests at concurrency 6, plus persisted history and
+  comment/like/unlike HTTP writes: PASS. No MongoDB deprecation, PHP Warning or
+  Fatal error in application logs. Four existing optional-field/first-chapter
+  boundary Notices were recorded separately; application code was not changed.
 
 ## Previous accepted release — 2026-10-26
 
