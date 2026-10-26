@@ -115,6 +115,11 @@ clear_env=no
         assert d['ok'] and d['uid'] == 33 and d['version'] == '7.4.33'
         return d
 
+    # A library compatibility regression must fail on E_DEPRECATED, not hide it.
+    put('/var/www/html/legacy-readpreference.php', (ROOT / 'tests/legacy-readpreference.php').read_text())
+    assert 'legacy-readpreference-ok' in run(['exec', NAME, 'php', '/var/www/html/legacy-readpreference.php'])
+    assert 'legacy-readpreference-ok' in fcgi('legacy-readpreference.php')
+
     first = health()
     for _ in range(5):
         assert 'producer:' + str(first['pid']) in fcgi('fatal.php')
@@ -153,7 +158,7 @@ echo "extension-smoke-ok";
         assert 'extension-smoke-ok' in fcgi('extension-smoke.php')
         assert set(['phalcon','mongodb','memcached','solr','gd','exif','mbstring','zip','mysqli','gmp','bcmath','psr']).issubset(set(health()['extensions']))
         assert '2.2.25' in run(['exec', NAME, 'composer', '--version'])
-        expected_versions = {'psr': '1.2.0', 'mongodb': '1.20.1', 'memcached': '3.2.0', 'solr': '2.8.1', 'phalcon': '4.1.1'}
+        expected_versions = {'psr': '1.2.0', 'mongodb': '1.19.4', 'memcached': '3.2.0', 'solr': '2.8.1', 'phalcon': '4.1.1'}
         for extension, version in expected_versions.items():
             assert run(['exec', NAME, 'php', '-r', 'echo phpversion("'+extension+'");']).strip() == version
     report = dict(status='PASS', image_id=inspect['Id'], repo_digests=inspect['RepoDigests'],

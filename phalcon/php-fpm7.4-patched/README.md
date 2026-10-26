@@ -13,17 +13,18 @@ applications should use the separate
 Docker Hub: [luofofo/phalcon-php-fpm7.4-patched](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched/tags?name=4.1.1).
 
 ```sh
-docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261026-amd64
-```
-
-Pin the accepted published image:
-
-```dockerfile
-FROM luofofo/phalcon-php-fpm7.4-patched@sha256:41cf4be8b17775b60ac128b9b62e0c0afe1f07b077bff66c1aaa474ac74ea436
+docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64
 ```
 
 The validation result is recorded in [VALIDATION.md](VALIDATION.md). This recipe does not overwrite `latest` or any
 Phalcon 3 tags.
+
+
+MongoDB 1.19.4 is intentionally pinned for older libraries that pass integer
+`ReadPreference::RP_*` modes. CLI and FPM acceptance promote PHP warnings to
+exceptions while checking these legacy modes. Existing 2026-10-26 tags are kept
+for rollback; no existing tag is overwritten. This is a compatibility pin, not
+a claim that older MongoDB libraries or extensions receive current security fixes.
 
 ## Build and test
 
@@ -36,7 +37,7 @@ source downloads and Debian archive packages. Run from this directory:
 ```
 
 Default local image:
-`phalcon74-patched:4.1.1-php7.4.33-php2shell-20261026-amd64`.
+`phalcon74-patched:4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64`.
 Set `PHALCON74_IMAGE` to use another local tag. On an ARM64 host, configure
 AMD64 execution support (such as QEMU) before building or testing.
 Build and acceptance evidence is written to ignored `reports/`.
@@ -68,7 +69,7 @@ hashes are checked independently.
 
 Phalcon 4.1.1 is built from official commit
 `dcb2be7acac3856ecba9b1032ddee9270503a614`, using its 64-bit source and API.
-PSR 1.2.0, MongoDB 1.20.1, Memcached 3.2.0, Solr 2.8.1 and Composer 2.2.25
+PSR 1.2.0, MongoDB 1.19.4, Memcached 3.2.0, Solr 2.8.1 and Composer 2.2.25
 are fixed and rebuilt/installed for AMD64. Git, Zip, GD with FreeType/JPEG,
 EXIF, MBString, MySQLi, GMP and BCMath are retained.
 

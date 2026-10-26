@@ -11,9 +11,9 @@
     "url": "https://codeload.github.com/php/pecl-search_engine-solr/tar.gz/9a8452d7ddc06f18f97752b34198d9b36499d29d",
     "sha256": "fc39ba1d40c00cd5eaeab9099160a696e263ee17d563e85dddedef52f48e4ea1"
   },
-  "mongodb-1.20.1.tgz": {
-    "url": "https://pecl.php.net/get/mongodb-1.20.1.tgz",
-    "sha256": "614e57594918feb621f525e6516d59ce09b78f5172355ba8afb6c2207c1ce900"
+  "mongodb-1.19.4.tgz": {
+    "url": "https://pecl.php.net/get/mongodb-1.19.4.tgz",
+    "sha256": "57c168b24a7d07f73367e4b134eb911ad1170ba7d203bc475f6ef1b860c16701"
   },
   "memcached-3.2.0.tgz": {
     "url": "https://pecl.php.net/get/memcached-3.2.0.tgz",

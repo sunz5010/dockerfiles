@@ -12,4 +12,4 @@ python3 "$ROOT/fetch-inputs.py"
 exec python3 "$ROOT/scripts/logged-run.py" "$ROOT/reports/phalcon74-build.log" \
     docker build --progress=plain --platform="$PLATFORM" \
     --build-arg "PHP_BASE_IMAGE=${PHP_BASE_IMAGE:-luofofo/php-fpm7.4-patched@sha256:d466e418826fb80950063e248863954908ea99f42952b24708e08b949788acb7}" \
-    -t "${PHALCON74_IMAGE:-phalcon3-php74-patched:3.4.5-php7.4.33-php2shell-20261026-r1-amd64}" "$ROOT"
+    -t "${PHALCON74_IMAGE:-phalcon3-php74-patched:3.4.5-php7.4.33-php2shell-20261027-mongo1.19.4-amd64}" "$ROOT"

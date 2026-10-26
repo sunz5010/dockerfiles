@@ -1,5 +1,15 @@
 # Phalcon 4.1.1 / PHP 7.4.33 AMD64 validation
 
+## MongoDB 1.19.4 compatibility release — 2026-10-27
+
+Target tag: `4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64`.
+The MongoDB extension is pinned to 1.19.4 for legacy integer read-preference
+compatibility. Existing 2026-10-26 image tags remain unchanged.
+This release is tested independently; results are recorded below after acceptance.
+
+## Previous accepted release — 2026-10-26
+
+
 Published and verified on 2026-10-26.
 
 - Image: `luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261026-amd64`.

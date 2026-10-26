@@ -57,7 +57,7 @@ RUN export MAKEFLAGS="-j${BUILD_JOBS}"; apt-get update \
 && cd ../../ \
 && rm -r cphalcon \
 && apt-get install -y --no-install-recommends git libxml2-dev libcurl4-gnutls-dev zlib1g-dev libmemcached-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libzip-dev libgmp-dev\
-&& pecl install /tmp/extension-sources/mongodb-1.20.1.tgz /tmp/extension-sources/memcached-3.2.0.tgz\
+&& pecl install /tmp/extension-sources/mongodb-1.19.4.tgz /tmp/extension-sources/memcached-3.2.0.tgz\
 && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
 && docker-php-ext-install gd exif mbstring zip mysqli gmp bcmath\
 && docker-php-ext-enable mongodb memcached\
@@ -82,6 +82,6 @@ RUN php -r 'if (PHP_VERSION !== "7.4.33" || Phalcon\Version::get() !== "4.1.1") 
  && mkdir -p /usr/local/share/phalcon4-php74
 COPY sources.lock.json SHA256SUMS PHALCON_LICENSE.txt THIRD_PARTY_NOTICES.md /usr/local/share/phalcon4-php74/
 LABEL org.opencontainers.image.title="PHP 7.4.33 patched FPM with Phalcon 4.1.1 (AMD64)" \
-      org.opencontainers.image.version="4.1.1-php7.4.33-php2shell-20261026-amd64" \
+      org.opencontainers.image.version="4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64" \
       local.phalcon.source="dcb2be7acac3856ecba9b1032ddee9270503a614" \
       local.phalcon.license="BSD-3-Clause"

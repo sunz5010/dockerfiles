@@ -9,18 +9,19 @@ Collection/ODM, Session, Cache and legacy DI interfaces.
 [Docker Hub](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched/tags?name=3.4.5)
 
 ```sh
-docker pull luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261026-r1-amd64
-```
-
-To pin the accepted image:
-
-```dockerfile
-FROM luofofo/phalcon-php-fpm7.4-patched@sha256:97d7a30d8dcaab7c529ca3bdb0277e0ce7b8bc18f191f1a990f7e9f00905666f
+docker pull luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261027-mongo1.19.4-amd64
 ```
 
 The earlier Phalcon 3 ARM64 tags were retired at the user's request. This
 recipe and tag target AMD64. Phalcon 4 has a separate recipe at
 [`../php-fpm7.4-patched/`](../php-fpm7.4-patched/).
+
+
+MongoDB 1.19.4 is intentionally pinned for older libraries that pass integer
+`ReadPreference::RP_*` modes. CLI and FPM acceptance promote PHP warnings to
+exceptions while checking these legacy modes. Existing 2026-10-26 tags are kept
+for rollback; no existing tag is overwritten. This is a compatibility pin, not
+a claim that older MongoDB libraries or extensions receive current security fixes.
 
 ## Build and test
 
@@ -61,7 +62,7 @@ release or a complete native-extension security audit.
 
 ## Included extensions
 
-PSR 1.2.0, MongoDB 1.20.1, Memcached 3.2.0, Solr 2.8.1, Composer 2.2.25,
+PSR 1.2.0, MongoDB 1.19.4, Memcached 3.2.0, Solr 2.8.1, Composer 2.2.25,
 GD with FreeType/JPEG, EXIF, MBString, Zip, MySQLi, GMP, BCMath, Git and Zip.
 The image retains the PHP-FPM entrypoint, `/var/www/html`, port 9000,
 www-data UID/GID 33 and SIGQUIT. Nginx or another FastCGI web server is required.
