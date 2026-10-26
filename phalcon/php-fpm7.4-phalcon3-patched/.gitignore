@@ -1,0 +1,7 @@
+/reports/
+/*.tar.gz
+/*.tgz
+/composer.phar
+*.download
+__pycache__/
+*.pyc

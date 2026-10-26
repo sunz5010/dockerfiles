@@ -1,5 +1,5 @@
-# Published, accepted PHP 7.4.33 mitigation base; currently linux/arm64 only.
-FROM luofofo/php-fpm7.4-patched:7.4.33-php2shell-20261022-712e60f9edfd-arm64@sha256:df302e995c224f019b64ac33324fd74ae1a7acd4724d6881effd33c5ccf410d0
+# Published, accepted PHP 7.4.33 mitigation base for linux/amd64.
+FROM luofofo/php-fpm7.4-patched@sha256:d466e418826fb80950063e248863954908ea99f42952b24708e08b949788acb7
 
 # phalcon 4.x
 
@@ -35,10 +35,11 @@ FROM luofofo/php-fpm7.4-patched:7.4.33-php2shell-20261022-712e60f9edfd-arm64@sha
 # 多安裝，libzip-dev，新版zip需要
 
 COPY SHA256SUMS *.tgz *.tar.gz composer.phar /tmp/extension-sources/
-RUN test "$(dpkg --print-architecture)" = arm64 \
+RUN test "$(dpkg --print-architecture)" = amd64 \
  && cd /tmp/extension-sources && sha256sum -c SHA256SUMS
 
-RUN apt-get update \
+ARG BUILD_JOBS=4
+RUN export MAKEFLAGS="-j${BUILD_JOBS}"; apt-get update \
 && apt-get install -y --no-install-recommends git zip \
 && mkdir php-psr && tar xzf /tmp/extension-sources/psr.tar.gz -C php-psr --strip-components=1 \
 && cd php-psr \
@@ -76,3 +77,11 @@ RUN apt-get update \
 && mkdir -p /tmp/pear/cache \
 && pecl clear-cache \
 && rm -rf /tmp/extension-sources
+
+RUN php -r 'if (PHP_VERSION !== "7.4.33" || Phalcon\Version::get() !== "4.1.1") exit(1);' \
+ && mkdir -p /usr/local/share/phalcon4-php74
+COPY sources.lock.json SHA256SUMS PHALCON_LICENSE.txt THIRD_PARTY_NOTICES.md /usr/local/share/phalcon4-php74/
+LABEL org.opencontainers.image.title="PHP 7.4.33 patched FPM with Phalcon 4.1.1 (AMD64)" \
+      org.opencontainers.image.version="4.1.1-php7.4.33-php2shell-20261026-amd64" \
+      local.phalcon.source="dcb2be7acac3856ecba9b1032ddee9270503a614" \
+      local.phalcon.license="BSD-3-Clause"

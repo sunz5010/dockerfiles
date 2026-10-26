@@ -1,0 +1,3 @@
+* text eol=lf
+# Keep checksum-locked unified-diff context bytes unchanged.
+*.patch -text -whitespace

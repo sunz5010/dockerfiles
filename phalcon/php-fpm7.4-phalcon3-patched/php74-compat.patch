@@ -1,0 +1,75 @@
+--- a/build/php7/64bits/phalcon.zep.c
++++ b/build/php7/64bits/phalcon.zep.c
+@@ -5097,17 +5097,40 @@
+ 	return 0;
+ }
+ 
+-static inline zend_class_entry *zephir_lookup_class_ce(zend_class_entry *ce, const char *property_name, unsigned int property_length)
+-{
++static inline zend_class_entry *zephir_lookup_class_ce(zend_class_entry *ce,
++										 const char *property_name,
++										 unsigned int property_length) {
+ 	zend_class_entry *original_ce = ce;
+ 	zend_property_info *info;
++	zend_class_entry *scope;
++	zval member;
++
++	ZVAL_STRINGL(&member, property_name, property_length);
++
++	/* Backup current scope */
++	scope = EG(fake_scope);
+ 
+ 	while (ce) {
+-		if ((info = zend_hash_str_find_ptr(&ce->properties_info, property_name, property_length)) != NULL && (info->flags & ZEND_ACC_SHADOW) != ZEND_ACC_SHADOW)  {
++		/* Use the scope of the current object */
++		EG(fake_scope) = ce;
++
++		info = zend_get_property_info(ce, Z_STR(member), 1);
++		if (info && info != ZEND_WRONG_PROPERTY_INFO) {
++			zval_ptr_dtor(&member);
++			/* Restore original scope */
++			EG(fake_scope) = scope;
++
+ 			return ce;
+ 		}
++
+ 		ce = ce->parent;
+ 	}
++
++	zval_ptr_dtor(&member);
++
++	/* Restore original scope */
++	EG(fake_scope) = scope;
++
+ 	return original_ce;
+ }
+ 
+@@ -7702,9 +7725,9 @@
+ 	ZVAL_UNDEF(&tmp_matches);
+ 
+ 	if (flags != 0 || offset != 0) {
+-		php_pcre_match_impl(pce, Z_STRVAL_P(subject), Z_STRLEN_P(subject), return_value, &tmp_matches, global, 1, flags, offset);
+-	} else {
+-		php_pcre_match_impl(pce, Z_STRVAL_P(subject), Z_STRLEN_P(subject), return_value, &tmp_matches, global, 0, 0, 0);
++		php_pcre_match_impl(pce, Z_STR_P(subject), return_value, &tmp_matches, global, 1, flags, offset);
++	} else {
++		php_pcre_match_impl(pce, Z_STR_P(subject), return_value, &tmp_matches, global, 0, 0, 0);
+ 	}
+ 
+ 	if (matches) {
+@@ -8656,11 +8679,10 @@
+ 	}
+ #endif
+ 
+-	file_handle.filename = require_path;
+-	file_handle.free_filename = 0;
+-	file_handle.type = ZEND_HANDLE_FILENAME;
+-	file_handle.opened_path = NULL;
+-	file_handle.handle.fp = NULL;
++	ret = php_stream_open_for_zend_ex(require_path, &file_handle, USE_PATH|STREAM_OPEN_FOR_INCLUDE);
++	if (ret != SUCCESS) {
++		return FAILURE;
++	}
+ 
+ 	new_op_array = zend_compile_file(&file_handle, ZEND_REQUIRE);
+ 	if (new_op_array) {

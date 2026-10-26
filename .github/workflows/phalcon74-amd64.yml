@@ -1,0 +1,64 @@
+name: Phalcon PHP 7.4 patched AMD64 build and test
+
+on:
+  push:
+    paths:
+      - 'phalcon/php-fpm7.4-patched/**'
+      - 'phalcon/php-fpm7.4-phalcon3-patched/**'
+      - '.github/workflows/phalcon74-amd64.yml'
+  pull_request:
+    paths:
+      - 'phalcon/php-fpm7.4-patched/**'
+      - 'phalcon/php-fpm7.4-phalcon3-patched/**'
+      - '.github/workflows/phalcon74-amd64.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phalcon74-amd64-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Phalcon ${{ matrix.major }} AMD64
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - major: '3'
+            package: phalcon/php-fpm7.4-phalcon3-patched
+          - major: '4'
+            package: phalcon/php-fpm7.4-patched
+    env:
+      PLATFORM: linux/amd64
+      PHALCON74_IMAGE: phalcon-ci:${{ matrix.major }}-${{ github.sha }}-amd64
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Verify native AMD64 Docker engine
+        run: |
+          actual=$(docker info --format '{{.Architecture}}')
+          case "$actual" in
+            amd64|x86_64) ;;
+            *) echo "Expected native AMD64 daemon, got $actual" >&2; exit 1 ;;
+          esac
+      - name: Build from verified sources
+        working-directory: ${{ matrix.package }}
+        run: ./build.sh
+      - name: Verify PHP mitigation and native extensions
+        working-directory: ${{ matrix.package }}
+        run: ./test.sh
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: phalcon-${{ matrix.major }}-amd64-${{ github.sha }}
+          path: ${{ matrix.package }}/reports/
+          retention-days: 14
+          if-no-files-found: warn

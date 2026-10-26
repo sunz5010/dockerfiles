@@ -1,48 +1,53 @@
-# Recorded validation
+# Phalcon 4.1.1 / PHP 7.4.33 AMD64 validation
 
-Date: 2026-10-22. Platform: native Linux ARM64 in the isolated project VM.
+Published and verified on 2026-10-26.
 
-- Build: PASS, exit 0.
-- CLI/FPM lifecycle and extension acceptance: PASS, exit 0.
-- Local image: `phalcon74-patched:4.1.1-php7.4.33-php2shell-arm64`.
-- Image descriptor: `sha256:d86c498879b60862aef8d9559be13364ca19e963117f9c675e84e61a60e24d12`.
-- Published base index: `sha256:df302e995c224f019b64ac33324fd74ae1a7acd4724d6881effd33c5ccf410d0`.
-- PHP CLI, FPM, phpize and php-config binary SHA256 values match the accepted
-  published base exactly. The 17 official patched source files also match.
-- Required versions: PHP 7.4.33; Phalcon 4.1.1; PSR 1.2.0; MongoDB 1.20.1;
-  Memcached 3.2.0; Solr 2.8.1; Composer 2.2.25.
+- Image: `luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261026-amd64`.
+- Manifest digest: `sha256:41cf4be8b17775b60ac128b9b62e0c0afe1f07b077bff66c1aaa474ac74ea436`.
+- Platform: linux/amd64 (`x86_64`).
+- Base: `luofofo/php-fpm7.4-patched@sha256:d466e418826fb80950063e248863954908ea99f42952b24708e08b949788acb7`.
 
-Acceptance exercises non-root FPM requests; repeated fatal/early-diagnostic
-requests in the same worker; OOM hard exit without a PHP shutdown callback;
-worker replacement; disabled session upload progress even when requested;
-Phalcon DI/Escaper, MongoDB BSON roundtrip, Memcached initialization, SolrQuery,
-GD PNG, Zip, MySQLi initialization, GMP and BCMath.
+## Accepted checks
 
-Build output retains two upstream `-Wstringop-overflow` diagnostics in Phalcon
-concatenation / PHP smart-string code and a build-time notice that MBString is
-already loaded in the base. This validation is not an ASan audit of those
-extensions. It does not include external database/cache/search services or
-application-specific tests.
+- PHP 7.4.33 and Phalcon 4.1.1; PHP executable is ELF x86-64.
+- PHP CLI/FPM/phpize/php-config SHA256 values exactly equal the published,
+  independently accepted patched AMD64 base.
+- All 17 complete PHP source hashes match official mitigation commit
+  `712e60f9edfd03f0960fc4fc3c2c375f42b90aa2`.
+- Non-root FPM worker, repeated same-worker fatal/early diagnostic requests,
+  immediate CLI OOM exit without PHP shutdown callback, FPM OOM worker
+  replacement and C-level disabled session upload progress: PASS.
+- Fixed PSR/MongoDB/Memcached/Solr/Phalcon versions; DI/Escaper, BSON,
+  Memcached initialization, SolrQuery, GD PNG, Zip, MySQLi initialization,
+  GMP, BCMath, extension availability in FPM and Composer: PASS.
+- Remote manifest identity equals the accepted image descriptor.
+- Anonymous pull with an empty Docker config: PASS.
+- Full acceptance against the remote digest after pull: PASS.
 
-The published PHP base separately passed 1006 selected official PHPT cases
-with 12 skips and zero failures; those PHPT results belong to the base.
-This change was built/tested locally on ARM64 and did not trigger a new cloud
-build. AMD64 is not supported by the currently published base.
+The base's selected official PHP regressions previously passed with 1006
+PASS, 12 SKIP and 0 FAIL. They are base evidence; the final image acceptance
+separately loads and exercises the native extensions and FPM lifecycle.
 
-Full build and acceptance reports are generated in ignored `reports/` by
-`./build.sh` and `./test.sh`. A local evidence copy and image archive are retained
-in the handoff workspace.
+## Scope
 
-## Docker Hub release verification
+This release build and full local acceptance executed AMD64 binaries under
+QEMU in an ARM64 Linux Docker VM. Native AMD64 build/test CI for this recipe
+and the separate Phalcon 3 recipe is included in
+[the repository workflow](../../.github/workflows/phalcon74-amd64.yml).
+CI does not log in to a registry, publish images or deploy services.
 
-Published 2026-10-22 after the source change was uploaded:
+Phalcon 4 has not been accepted as a drop-in runtime for a Phalcon 3
+application. The existing Phalcon 3 AMD64 image is retained, with its source
+recipe at `../php-fpm7.4-phalcon3-patched/`. No application services were changed.
 
-`luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261022-arm64`
+The old `4.1.1-php7.4.33-php2shell-20261022-arm64` tag was retired at the
+user's request. No AMD64 tags or `latest` were overwritten.
 
-Remote index digest:
-`sha256:d86c498879b60862aef8d9559be13364ca19e963117f9c675e84e61a60e24d12`.
-It equals the accepted local image descriptor. The index has one runnable
-platform, linux/arm64, plus build provenance. Anonymous pull with an empty
-Docker config passed, and all lifecycle/extension acceptance checks passed
-again using the remote repository and digest. PHP binary hashes still match
-the published patched base. No AMD64 or latest tag was published.
+This is PHP's official minimal EOL mitigation, not comprehensive security
+maintenance or a complete exploit/sanitizer proof. GCC emitted stringop-overflow
+warnings in generated Phalcon concat code and legacy MBString code, and
+installation reported mbstring already loaded; completed runtime tests passed.
+These functional checks do not establish the safety of every native path.
+
+Full build/acceptance/push/anonymous-pull/manifest evidence is retained in the
+maintainer's ignored `reports/`; CI uploads independent per-job evidence.

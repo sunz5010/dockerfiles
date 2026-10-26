@@ -60,7 +60,9 @@ fclose($f);
 
 try:
     inspect = json.loads(run(['image', 'inspect', IMAGE]))[0]
-    run(['run', '-d', '--name', NAME, '--network', 'none', '--memory', '512m',
+    daemon_arch = run(['info', '--format', '{{.Architecture}}']).strip()
+    assert 'x86-64' in run(['run', '--rm', '--platform', 'linux/amd64', '--network', 'none', IMAGE, 'file', '/usr/local/bin/php'])
+    run(['run', '--platform', 'linux/amd64', '-d', '--name', NAME, '--network', 'none', '--memory', '512m',
          '--pids-limit', '64', IMAGE, 'sleep', '600'])
     for args in [['php', '-v'], ['php-fpm', '-v'], ['phpize', '--version'],
                  ['php-config', '--configure-options'], ['php', '-m'], ['php-fpm', '-t']]:
@@ -72,9 +74,10 @@ try:
     run(['exec', '-w', '/usr/src/php', NAME, 'sha256sum', '-c', '/usr/local/share/php2shell/source-files.sha256'])
     actual_sources = run(['exec', NAME, 'cat', '/usr/local/share/php2shell/source-files.sha256'])
     assert actual_sources == (ROOT / 'official-source-files.sha256').read_text()
-    assert inspect['Architecture'] == 'arm64' and inspect['Os'] == 'linux'
+    assert inspect['Architecture'] == 'amd64' and inspect['Os'] == 'linux'
     hashes = run(['exec', NAME, 'sha256sum', '/usr/local/bin/php', '/usr/local/sbin/php-fpm',
                   '/usr/local/bin/phpize', '/usr/local/bin/php-config'])
+    assert hashes == (ROOT / 'base-binaries.sha256').read_text(), 'PHP binaries differ from the accepted patched base'
     put('/tmp/oom.php', '<?php register_shutdown_function(function(){file_put_contents("/tmp/shutdown-ran","yes");}); str_repeat("x",64*1024*1024);')
     oom = run(['exec', NAME, 'php', '-n', '-d', 'memory_limit=8M', '/tmp/oom.php'], expected=1)
     assert 'Allowed memory size' in oom
@@ -155,6 +158,8 @@ echo "extension-smoke-ok";
             assert run(['exec', NAME, 'php', '-r', 'echo phpversion("'+extension+'");']).strip() == version
     report = dict(status='PASS', image_id=inspect['Id'], repo_digests=inspect['RepoDigests'],
                   architecture=inspect['Architecture'], binary_hashes=hashes,
+                  daemon_architecture=daemon_arch,
+                  execution='native AMD64' if daemon_arch in ('amd64', 'x86_64') else 'AMD64 under cross-architecture execution',
                   scope='Official minimal EOL mitigation; source equality, OOM immediate exit, same-worker fatal/early diagnostic, disabled upload lifecycle, CLI/FPM smoke. Not comprehensive exploit or sanitizer proof.',
                   first_worker=first, replacement_worker=after)
 except Exception as e:

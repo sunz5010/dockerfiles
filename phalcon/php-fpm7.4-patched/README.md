@@ -1,36 +1,33 @@
-# Phalcon 4.1.1 / PHP 7.4.33 patched FPM
+# Phalcon 4.1.1 / patched PHP 7.4.33 FPM — AMD64
 
-This separate recipe uses our published PHP 7.4 PHP2Shell mitigation base:
+This recipe builds **linux/amd64** (Linux `x86_64`) using the accepted patched
+PHP 7.4.33 base. The earlier ARM64 Phalcon 4 recipe is replaced by this AMD64
+recipe; the old ARM64 Docker Hub tag is retired.
 
-```dockerfile
-FROM luofofo/php-fpm7.4-patched:7.4.33-php2shell-20261022-712e60f9edfd-arm64@sha256:df302e995c224f019b64ac33324fd74ae1a7acd4724d6881effd33c5ccf410d0
-```
-
-The published base currently supports **linux/arm64 only**. The original
-[`../php-fpm7.4/Dockerfile`](../php-fpm7.4/Dockerfile) is retained separately.
-This directory does not publish a Phalcon image to Docker Hub automatically.
+Phalcon 4 has different application APIs from Phalcon 3. Existing Phalcon 3
+applications should use the separate
+[Phalcon 3.4.5 compatibility recipe](../php-fpm7.4-phalcon3-patched/).
 
 ## Published image
 
-Docker Hub: [luofofo/phalcon-php-fpm7.4-patched](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched).
-The published image supports **linux/arm64 only**.
+Docker Hub: [luofofo/phalcon-php-fpm7.4-patched](https://hub.docker.com/r/luofofo/phalcon-php-fpm7.4-patched/tags?name=4.1.1).
 
 ```sh
-docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261022-arm64
+docker pull luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261026-amd64
 ```
 
-To pin this Phalcon image in a downstream Dockerfile:
+Pin the accepted published image:
 
 ```dockerfile
-FROM luofofo/phalcon-php-fpm7.4-patched@sha256:d86c498879b60862aef8d9559be13364ca19e963117f9c675e84e61a60e24d12
+FROM luofofo/phalcon-php-fpm7.4-patched@sha256:41cf4be8b17775b60ac128b9b62e0c0afe1f07b077bff66c1aaa474ac74ea436
 ```
 
-Release source commit: `2c57b2f011525b4426b14ba438785189c9019cd1`.
-Remote digest equality, anonymous pull and acceptance by remote digest passed.
+The validation result is recorded in [VALIDATION.md](VALIDATION.md). This recipe does not overwrite `latest` or any
+Phalcon 3 tags.
 
 ## Build and test
 
-Requirements: Docker with BuildKit, Python 3 and network access for verified
+Requirements: Docker/buildx, Python 3, and network access for SHA256-verified
 source downloads and Debian archive packages. Run from this directory:
 
 ```sh
@@ -38,45 +35,63 @@ source downloads and Debian archive packages. Run from this directory:
 ./test.sh
 ```
 
-Default local image: `phalcon74-patched:4.1.1-php7.4.33-php2shell-arm64`.
-Set `PHALCON74_IMAGE` to use another local tag. Build and acceptance evidence is
-written to ignored `reports/`.
+Default local image:
+`phalcon74-patched:4.1.1-php7.4.33-php2shell-20261026-amd64`.
+Set `PHALCON74_IMAGE` to use another local tag. On an ARM64 host, configure
+AMD64 execution support (such as QEMU) before building or testing.
+Build and acceptance evidence is written to ignored `reports/`.
 
-For a direct Docker build, prepare the complete context first:
+For a direct Docker build, first prepare and validate all inputs:
 
 ```sh
 python3 fetch-inputs.py
-docker build --platform=linux/arm64 -t phalcon74-patched:local .
+docker build --platform=linux/amd64 -t phalcon74-patched:local .
 PHALCON74_IMAGE=phalcon74-patched:local ./test.sh
 ```
 
-Downloaded sources are SHA256-locked in `sources.lock.json` and `SHA256SUMS`,
-and are excluded from Git. `python3 fetch-inputs.py --offline` verifies an
-already prepared context. The base image uses Debian's signed Bullseye archive
-repositories; this recipe inherits that configuration.
+`python3 fetch-inputs.py --offline` validates an already prepared context.
+Sources are locked in `sources.lock.json` and `SHA256SUMS` and are excluded
+from Git. Existing inputs with invalid hashes are rejected, not overwritten.
+The Dockerfile verifies them again. `BUILD_JOBS` defaults to 4 for compilation;
+no host-specific instruction-set requirements are deliberately enabled.
 
-## Compatibility changes
+## Base and extensions
 
-- Pin Phalcon's official v4.1.1 source commit, replacing the removed
-  `4.1.1-release` branch, and explicitly select its 64-bit build on ARM64.
-- Pin PSR 1.2.0, MongoDB 1.20.1, Memcached 3.2.0, Solr 2.8.1 and Composer 2.2.25.
-  Install a verified Composer PHAR instead of executing a remote installer.
-- Preserve Git, Zip, GD with FreeType/JPEG, EXIF, MBString, MySQLi, GMP and BCMath.
-- Leave the Solr build directory before removing it, and prepare PEAR's cache
-  directory before clearing the cache.
+```dockerfile
+FROM luofofo/php-fpm7.4-patched@sha256:d466e418826fb80950063e248863954908ea99f42952b24708e08b949788acb7
+```
 
-## Validation and scope
+The base contains official PHP EOL mitigation commit
+`712e60f9edfd03f0960fc4fc3c2c375f42b90aa2`. PHP CLI/FPM/phpize/php-config
+hashes must equal this accepted base, and all 17 official patched source-file
+hashes are checked independently.
 
-`test.sh` checks the 17 official patched PHP source hashes, PHP/FPM/tool versions,
-non-root FPM requests, repeated fatal-error requests, immediate OOM exit and
-worker replacement, and disabled session upload progress. It also exercises
-Phalcon DI/Escaper, MongoDB BSON, Memcached initialization, SolrQuery, GD PNG,
-Zip, MySQLi initialization, GMP, BCMath, extension versions and Composer.
-No external MongoDB, Memcached, Solr or application fixtures are required.
-See [VALIDATION.md](VALIDATION.md) for the recorded build result.
+Phalcon 4.1.1 is built from official commit
+`dcb2be7acac3856ecba9b1032ddee9270503a614`, using its 64-bit source and API.
+PSR 1.2.0, MongoDB 1.20.1, Memcached 3.2.0, Solr 2.8.1 and Composer 2.2.25
+are fixed and rebuilt/installed for AMD64. Git, Zip, GD with FreeType/JPEG,
+EXIF, MBString, MySQLi, GMP and BCMath are retained.
 
-The base contains PHP's official minimal EOL mitigation commit
-`712e60f9edfd03f0960fc4fc3c2c375f42b90aa2`. OOM terminates a worker immediately,
-and session upload progress is disabled at C level. This is not comprehensive
-security maintenance for end-of-life PHP, Debian, Phalcon or its extensions.
-Base patch attribution: [PATCH_PROVENANCE.md](../../php-fpm7.4-patched/PATCH_PROVENANCE.md).
+The image keeps the official FPM entrypoint, `/var/www/html`, port 9000,
+www-data UID/GID 33 and SIGQUIT. A FastCGI web server such as Nginx is required.
+
+## Verification and scope
+
+`test.sh` uses isolated containers with no host mounts, external networking
+or published ports. It verifies ELF x86-64, source equality, unchanged patched
+PHP binaries, non-root FPM requests, repeated same-worker fatal requests,
+OOM immediate exit and worker replacement, C-level disabled upload progress,
+all extension versions/functions and Composer.
+
+The native AMD64 workflow tests Phalcon 3 and 4 separately. It does not use
+registry credentials, publish images, or deploy application services.
+Phalcon 4 has not been accepted as a drop-in runtime for a Phalcon 3 application.
+
+OOM terminates a worker immediately without running PHP shutdown callbacks.
+Session upload progress is disabled at C level, including when INI tries to
+re-enable it. This is the official *minimal EOL mitigation*, not comprehensive
+security maintenance for all PHP, Debian, Phalcon or extension issues.
+
+See [PHP_PATCH_PROVENANCE.md](PHP_PATCH_PROVENANCE.md),
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and
+[PHALCON_LICENSE.txt](PHALCON_LICENSE.txt).

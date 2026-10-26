@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!SHA256SUMS
+!sources.lock.json
+!*.tar.gz
+!*.tgz
+!composer.phar
+!php74-compat.patch
+!PHALCON_LICENSE.txt
+!THIRD_PARTY_NOTICES.md
