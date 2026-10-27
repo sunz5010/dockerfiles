@@ -1,4 +1,4 @@
-FROM luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261026-amd64
+FROM luofofo/phalcon-php-fpm7.4-patched:4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64
 
 # persistent dependencies
 RUN set -eux; \
