@@ -1,5 +1,15 @@
 # WordPress / patched PHP 7.4 FPM — AMD64
 
+## PHP2Shell + Brotli security release — 2026-10-29
+
+The combined security release retains the official PHP2Shell minimal EOL mitigation (**CVE-2026-109618 / CVE-2026-109619**) and fixes **Brotli CVE-2026-111497** with **Brotli 1.0.10**. MongoDB **1.19.4** and the WordPress / Phalcon 4.1.1 API are retained. Native AMD64 CI and anonymous remote-digest pull/revalidation passed.
+
+```sh
+docker pull luofofo/wordpress-phalcon-php-fpm7.4:4.1.1-php7.4.33-php2shell-20261029-mongo1.19.4-brotli1.0.10-amd64
+```
+
+See the [combined security recipe and release record](../../security/brotli-cve-2026-111497/RELEASE.md) for the immutable digest and reproducible overlay build. The historical Dockerfile and 2026-10-27 baseline below are preserved; use the security overlay recipe when rebuilding both fixes.
+
 PHP-FPM runtime for an existing WordPress installation, based on the accepted
 Phalcon 4.1.1 / PHP 7.4.33 patched image with MongoDB extension 1.19.4.
 This recipe builds Linux AMD64 (`x86_64`).
