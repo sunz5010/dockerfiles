@@ -1,0 +1,68 @@
+name: PHP 7.4 PHP2Shell and Brotli security validation
+
+on:
+  push:
+    paths:
+      - 'security/brotli-cve-2026-111497/**'
+      - '.github/workflows/php74-brotli-amd64.yml'
+  pull_request:
+    paths:
+      - 'security/brotli-cve-2026-111497/**'
+      - '.github/workflows/php74-brotli-amd64.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: php74-brotli-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: PHP2Shell + Brotli / Phalcon 3 and WordPress / native AMD64
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      BROTLI_WORK_DIR: ${{ github.workspace }}/security/brotli-cve-2026-111497/.work
+    defaults:
+      run:
+        working-directory: security/brotli-cve-2026-111497
+        shell: bash
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Check native AMD64 daemon
+        run: |
+          case "$(docker info --format '{{.Architecture}}')" in
+            amd64|x86_64) ;;
+            *) echo 'Native AMD64 required'; exit 1 ;;
+          esac
+      - name: Build both fixed images and export verified-source packages
+        run: sh build-local.sh
+      - name: Verify Phalcon 3 Brotli linkage, TLS, decoding and package changes
+        run: |
+          python3 tests/verify.py php74-brotli-local:phalcon3-20261029 \
+            luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261027-mongo1.19.4-amd64 phalcon3
+      - name: Verify WordPress Brotli linkage, TLS, decoding and package changes
+        run: |
+          python3 tests/verify.py php74-brotli-local:wordpress-20261029 \
+            luofofo/wordpress-phalcon-php-fpm7.4:4.1.1-php7.4.33-php2shell-20261027-mongo1.19.4-amd64 wordpress
+      - name: Retain PHP2Shell mitigation and native extension behavior
+        run: |
+          python3 tests/regression/phalcon3/tests/acceptance.py php74-brotli-local:phalcon3-20261029
+          python3 tests/regression/wordpress/tests/acceptance.py php74-brotli-local:wordpress-20261029
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: php74-php2shell-brotli-amd64-${{ github.sha }}
+          path: |
+            security/brotli-cve-2026-111497/.work/reports/
+            security/brotli-cve-2026-111497/.work/artifacts/provenance/
+            security/brotli-cve-2026-111497/tests/regression/*/reports/
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: warn
