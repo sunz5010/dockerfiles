@@ -1,0 +1,41 @@
+{
+  "status": "PUBLISHED_VERIFIED",
+  "time_utc": "2026-11-08T03:59:42.991502+00:00",
+  "target": "luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261029-mongo1.19.4-brotli1.0.10-fpm30-20261108-amd64",
+  "digest": "sha256:393caa1099805a2dc28365c5c78e5ff9c67cb8ad1ce87ab019d07910ac6df1f3",
+  "base": "luofofo/phalcon-php-fpm7.4-patched@sha256:58f811169eb23a1f936e901671ae29f3f75d2b0496fa28584e9d267ae075f6ef",
+  "source_commit": "5cd9d412fe9577242de890d2a9c133e77117134e",
+  "native_ci": "https://github.com/sunz5010/dockerfiles/actions/runs/42444883208",
+  "platforms": [
+    {
+      "architecture": "amd64",
+      "os": "linux"
+    }
+  ],
+  "verification": {
+    "status": "PASS",
+    "base": "luofofo/phalcon-php-fpm7.4-patched@sha256:58f811169eb23a1f936e901671ae29f3f75d2b0496fa28584e9d267ae075f6ef",
+    "image": "phalcon3-fpm-capacity:20261108",
+    "image_id": "sha256:393caa1099805a2dc28365c5c78e5ff9c67cb8ad1ce87ab019d07910ac6df1f3",
+    "platform": "linux/amd64",
+    "verified_filesystem_entries": 15000,
+    "changed_files": [
+      "usr/local/etc/php-fpm.d/www.conf"
+    ],
+    "runtime_config_unchanged": true,
+    "base_layers_unchanged": true,
+    "versions": {
+      "php": "7.4.33",
+      "phalcon": "3.4.5",
+      "mongodb": "1.19.4",
+      "brotli": "1.0.10"
+    },
+    "max_children": 30,
+    "max_spare_servers": 20,
+    "fpm_ready": true
+  },
+  "production_deployment": false,
+  "anonymous_pull": "PASS",
+  "post_pull_verification": "PASS",
+  "previous_tags_unchanged": true
+}

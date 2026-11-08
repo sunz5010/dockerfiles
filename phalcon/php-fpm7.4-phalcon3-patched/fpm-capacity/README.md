@@ -28,3 +28,16 @@ The export is streamed without storing a full image archive.
 
 The image targets **linux/amd64**, matching the existing production image.
 Building or publishing it does not update any server or Swarm service.
+
+## Published release — 2026-11-08
+
+```sh
+docker pull luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261029-mongo1.19.4-brotli1.0.10-fpm30-20261108-amd64
+```
+
+Immutable digest: `sha256:393caa1099805a2dc28365c5c78e5ff9c67cb8ad1ce87ab019d07910ac6df1f3`.
+
+[Native AMD64 validation](https://github.com/sunz5010/dockerfiles/actions/runs/42444883208) passed. The published
+digest was pulled anonymously and reverified. Every previous Docker Hub tag
+retains its original digest. See [RELEASE.json](RELEASE.json) for the release
+record. No production deployment was performed.

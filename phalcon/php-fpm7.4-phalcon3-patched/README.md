@@ -6,6 +6,12 @@ The [configuration-only overlay](fpm-capacity/) restores `pm.max_children=30`
 and `pm.max_spare_servers=20` on the existing Phalcon **3.4.5** security image.
 All other image files and runtime configuration are retained.
 
+```sh
+docker pull luofofo/phalcon-php-fpm7.4-patched:3.4.5-php7.4.33-php2shell-20261029-mongo1.19.4-brotli1.0.10-fpm30-20261108-amd64
+```
+
+Published digest and validation: [release record](fpm-capacity/RELEASE.json).
+
 
 ## PHP2Shell + Brotli security release — 2026-10-29
 
