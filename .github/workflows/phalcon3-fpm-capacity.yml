@@ -1,0 +1,47 @@
+name: Phalcon 3 FPM capacity overlay
+
+on:
+  push:
+    paths:
+      - 'phalcon/php-fpm7.4-phalcon3-patched/fpm-capacity/**'
+      - '.github/workflows/phalcon3-fpm-capacity.yml'
+  pull_request:
+    paths:
+      - 'phalcon/php-fpm7.4-phalcon3-patched/fpm-capacity/**'
+      - '.github/workflows/phalcon3-fpm-capacity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Require native AMD64
+        run: |
+          case "$(docker info --format '{{.Architecture}}')" in
+            amd64|x86_64) ;;
+            *) echo 'Native AMD64 required'; exit 1 ;;
+          esac
+      - name: Build configuration-only overlay
+        run: |
+          docker build --platform linux/amd64 --network none \
+            -t phalcon3-fpm-capacity:20261108 \
+            phalcon/php-fpm7.4-phalcon3-patched/fpm-capacity
+      - name: Verify only the pool settings changed
+        run: |
+          docker pull --platform linux/amd64 \
+            luofofo/phalcon-php-fpm7.4-patched@sha256:58f811169eb23a1f936e901671ae29f3f75d2b0496fa28584e9d267ae075f6ef
+          python3 phalcon/php-fpm7.4-phalcon3-patched/fpm-capacity/verify.py \
+            phalcon3-fpm-capacity:20261108 | tee fpm-capacity-verification.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: phalcon3-fpm-capacity-${{ github.sha }}
+          path: fpm-capacity-verification.json
+          retention-days: 14

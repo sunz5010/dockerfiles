@@ -1,5 +1,12 @@
 # Phalcon 3.4.5 / patched PHP 7.4.33 FPM — AMD64
 
+## FPM capacity restoration — 2026-11-08
+
+The [configuration-only overlay](fpm-capacity/) restores `pm.max_children=30`
+and `pm.max_spare_servers=20` on the existing Phalcon **3.4.5** security image.
+All other image files and runtime configuration are retained.
+
+
 ## PHP2Shell + Brotli security release — 2026-10-29
 
 The combined security release retains the official PHP2Shell minimal EOL mitigation (**CVE-2026-109618 / CVE-2026-109619**) and fixes **Brotli CVE-2026-111497** with **Brotli 1.0.10**. MongoDB **1.19.4** and the Phalcon 3.4.5 API are retained. Native AMD64 CI and anonymous remote-digest pull/revalidation passed.
